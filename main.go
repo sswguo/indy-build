@@ -8,11 +8,11 @@ import (
 
 func main() {
 	// cmd.Execute()
-	hostedVars := template.IndyHostedVars{
-		Name: "build-1",
+	promoteVars := template.IndyPromoteVars{
+		Source: "maven:hosted:build-1",
+		Target: "maven:hosted:pnc-builds",
+		Paths:  []string{"/a/b/c", "/x/y/z"},
 	}
-
-	s := template.IndyHostedTemplate(&hostedVars)
-
-	fmt.Println(s)
+	promote := template.IndyPromoteJSONTemplate(&promoteVars)
+	fmt.Println(promote)
 }

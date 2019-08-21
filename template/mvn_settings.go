@@ -14,8 +14,7 @@ type MvnSettingsVars struct {
 
 // MvnSettingsTemplate ...
 func MvnSettingsTemplate(settingsVars *MvnSettingsVars) string {
-	var settingsTemplate = `
-<settings>
+	var settingsTemplate = `<settings>
   <localRepository>{{.UserHome}}/.m2/repo-{{.BuildGroup}}</localRepository>
   <mirrors>
     <mirror>
@@ -65,8 +64,8 @@ func MvnSettingsTemplate(settingsVars *MvnSettingsVars) string {
     <activeProfile>resolve-settings</activeProfile>
     <activeProfile>deploy-settings</activeProfile>
   </activeProfiles>
-</settings>
-`
+</settings>`
+
 	t := template.Must(template.New("settings").Parse(settingsTemplate))
 	var buf bytes.Buffer
 	err := t.Execute(&buf, settingsVars)

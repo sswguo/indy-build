@@ -31,6 +31,15 @@ func ExampleIndyHostedTemplate() {
 	}
 
 	hosted := template.IndyHostedTemplate(&hostedVars)
-
 	fmt.Println(hosted)
+}
+
+func ExampleIndyPromoteJSONTemplate() {
+	promoteVars := template.IndyPromoteVars{
+		Source: "maven:hosted:build-1",
+		Target: "maven:hosted:pnc-builds",
+		Paths:  []string{"/a/b/c", "/x/y/z"},
+	}
+	promote := template.IndyPromoteJSONTemplate(&promoteVars)
+	fmt.Println(promote)
 }

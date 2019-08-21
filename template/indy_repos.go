@@ -15,8 +15,7 @@ type IndyGroupVars struct {
 
 // IndyGroupTemplate ...
 func IndyGroupTemplate(indyGroupVars *IndyGroupVars) string {
-	groupTemplate := `
-{
+	groupTemplate := `{
   "type" : "group",
   "key" : "maven:group:{{.Name}}",
   "metadata" : {
@@ -31,15 +30,9 @@ func IndyGroupTemplate(indyGroupVars *IndyGroupVars) string {
   "path_style" : "plain",
   "authoritative_index" : false,
   "prepend_constituent" : false
-}
-  `
-	funcMap := template.FuncMap{
-		// The name "inc" is what the function will be called in the template text.
-		"isNotLast": func(index int, array []string) bool {
-			return index < len(array)-1
-		},
-	}
-	t := template.Must(template.New("settings").Funcs(funcMap).Parse(groupTemplate))
+}`
+
+	t := template.Must(template.New("settings").Funcs(isNotLast).Parse(groupTemplate))
 	var buf bytes.Buffer
 	err := t.Execute(&buf, indyGroupVars)
 	if err != nil {
@@ -57,8 +50,7 @@ type IndyHostedVars struct {
 
 // IndyHostedTemplate ...
 func IndyHostedTemplate(indyHostedVars *IndyHostedVars) string {
-	hostedTemplate := `
-{
+	hostedTemplate := `{
   "key" : "maven:hosted:{{.Name}}",
   "description" : "{{.Name}}",
   "metadata" : {
@@ -75,8 +67,7 @@ func IndyHostedTemplate(indyHostedVars *IndyHostedVars) string {
   "authoritative_index" : true,
   "allow_snapshots" : true,
   "allow_releases" : true
-}
-	`
+}`
 
 	t := template.Must(template.New("settings").Parse(hostedTemplate))
 	var buf bytes.Buffer
