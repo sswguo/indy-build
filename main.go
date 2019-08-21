@@ -8,12 +8,11 @@ import (
 
 func main() {
 	// cmd.Execute()
-	groupVars := template.IndyGroupVars{
-		Name:         "build-1",
-		Constituents: []string{"maven:remote:central", "maven:hosted:build-1"},
+	hostedVars := template.IndyHostedVars{
+		Name: "build-1",
 	}
 
-	s := template.IndyGroupTemplate(&groupVars)
+	s := template.IndyHostedTemplate(&hostedVars)
 
 	fmt.Println(s)
 }

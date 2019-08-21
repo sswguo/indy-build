@@ -7,18 +7,12 @@ import (
 	"text/template"
 )
 
+// MvnSettingsVars ...
 type MvnSettingsVars struct {
-	UserHome, BuildGroup, IndyUrl string
+	UserHome, BuildGroup, IndyURL string
 }
 
-// Usage Example:
-//
-// settingsVar := cmd.MvnSettingsVars{
-// 		UserHome:   "/home/user",
-// 		BuildGroup: "build-1",
-// 		IndyUrl:    "http://indy.yourdomain.com",
-// 	}
-// settings := cmd.MvnSettingsTemplate(&settingsVar)
+// MvnSettingsTemplate ...
 func MvnSettingsTemplate(settingsVars *MvnSettingsVars) string {
 	var settingsTemplate = `
 <settings>
