@@ -5,15 +5,17 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"gitlab.cee.redhat.com/gli/indy-build/process"
 )
+
+var indyURL, prjPom, prjTag, buildName string
 
 var rootCmd = &cobra.Command{
 	Use:   "indy-build",
-	Short: "indy-client is a cli client to start build against indy",
-	Long:  "indy-client is a cli client to start build against indy",
+	Short: "indy-build is a cli tool to start build against indy",
+	Long:  "indy-build is a cli client to start build against indy",
 	Run: func(cmd *cobra.Command, args []string) {
-		goals := []string{"clean", "compile"}
-		ExecMvn(goals, "/home/gli/workspaces/java/projects/nos/partyline/pom.xml", "")
+		process.RunBuild(indyURL, prjPom, prjTag, buildName)
 	},
 }
 
@@ -26,5 +28,8 @@ func Execute() {
 }
 
 func init() {
-
+	rootCmd.Flags().StringVarP(&indyURL, "indy_url", "i", "", "indy url.")
+	rootCmd.Flags().StringVarP(&prjPom, "prjPom", "p", "", "project pom.")
+	rootCmd.Flags().StringVarP(&prjTag, "prjTag", "t", "", "project tag.")
+	rootCmd.Flags().StringVarP(&buildName, "buildName", "b", "", "build name.")
 }
