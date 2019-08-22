@@ -25,6 +25,8 @@ func runMvn(goals []string, pomfile string, settingsFile string) {
 		args = append(args, goal)
 	}
 
+	args = append(args, "-DskipTests")
+
 	if len(strings.Trim(pomfile, "")) > 0 {
 		args = append(args, "-f")
 		args = append(args, pomfile)
