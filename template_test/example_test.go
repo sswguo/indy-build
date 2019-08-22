@@ -8,7 +8,7 @@ import (
 
 func ExampleMvnSettingsTemplate() {
 	settingsVar := template.MvnSettingsVars{
-		UserHome:   "/home/user",
+		LocalRepo: "/home/user/.m2/repo",
 		BuildGroup: "build-1",
 		IndyURL:    "http://indy.yourdomain.com",
 	}
