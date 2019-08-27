@@ -25,10 +25,10 @@ func preapareTargetHosted(indyURL string) bool {
 	URL := fmt.Sprintf("%s/api/admin/stores/maven/hosted/%s", indyURL, target)
 	_, result := getRequest(URL)
 	if result {
-		fmt.Printf("Target hosted %s already exists, will bypass creation", target)
+		fmt.Printf("Target hosted %s already exists, will bypass creation\n\n", target)
 		return result
 	}
-	fmt.Printf("Target hosted %s not exists, will create first", target)
+	fmt.Printf("Target hosted %s not exists, will create first\n\n", target)
 
 	hostedVars := template.IndyHostedVars{
 		Name: target,
