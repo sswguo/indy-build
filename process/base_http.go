@@ -31,17 +31,17 @@ func httpRequest(url, method string, needResult bool, data io.Reader) (string, b
 	respText := ""
 	req, err := http.NewRequest(method, url, data)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 		return respText, false
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 		return respText, false
 	}
 
 	if resp.StatusCode >= 400 {
-		log.Fatal(fmt.Sprintf("%s request not success, status: %s, return code: %v", method, resp.Status, resp.StatusCode))
+		log.Print(fmt.Sprintf("%s request not success for %s, status: %s, return code: %v", method, url, resp.Status, resp.StatusCode))
 		return respText, false
 	}
 
@@ -52,10 +52,10 @@ func httpRequest(url, method string, needResult bool, data io.Reader) (string, b
 			panic(err)
 		}
 
+		resp.Body.Close()
+
 		return string(content), true
 	}
-
-	defer resp.Body.Close()
 
 	return respText, true
 
