@@ -20,7 +20,7 @@ func MvnSettingsTemplate(settingsVars *MvnSettingsVars) string {
     <mirror>
       <id>indy-build</id>
       <mirrorOf>*</mirrorOf>
-      <url>{{.IndyURL}}/api/content/maven/group/{{.BuildGroup}}</url>
+      <url>{{.IndyURL}}/api/folo/track/{{.BuildGroup}}/maven/group/{{.BuildGroup}}</url>
     </mirror>
   </mirrors>
   <profiles>
@@ -29,7 +29,7 @@ func MvnSettingsTemplate(settingsVars *MvnSettingsVars) string {
       <repositories>
         <repository>
           <id>central</id>
-          <url>{{.IndyURL}}/api/content/maven/group/{{.BuildGroup}}</url>
+          <url>{{.IndyURL}}/api/folo/track/{{.BuildGroup}}/maven/group/{{.BuildGroup}}</url>
           <releases>
             <enabled>true</enabled>
           </releases>
@@ -41,7 +41,7 @@ func MvnSettingsTemplate(settingsVars *MvnSettingsVars) string {
       <pluginRepositories>
         <pluginRepository>
           <id>central</id>
-          <url>{{.IndyURL}}/api/content/maven/group/{{.BuildGroup}}</url>
+          <url>{{.IndyURL}}/api/folo/track/{{.BuildGroup}}/maven/group/{{.BuildGroup}}</url>
           <releases>
             <enabled>true</enabled>
           </releases>
@@ -55,7 +55,7 @@ func MvnSettingsTemplate(settingsVars *MvnSettingsVars) string {
     <profile>
       <id>deploy-settings</id>
       <properties>
-        <altDeploymentRepository>{{.BuildGroup}}::default::{{.IndyURL}}/api/content/maven/group/{{.BuildGroup}}</altDeploymentRepository>
+        <altDeploymentRepository>{{.BuildGroup}}::default::{{.IndyURL}}/api/folo/track/{{.BuildGroup}}/maven/group/{{.BuildGroup}}</altDeploymentRepository>
       </properties>
     </profile>
     

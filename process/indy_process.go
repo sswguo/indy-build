@@ -1,6 +1,7 @@
 package process
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -66,10 +67,46 @@ func destroyGroup(indyURL string, buildName string) {
 	}
 }
 
-func promote(indyURL, source, target string) {
+func sealFolo(indyURL, foloId string) bool {
+	URL := fmt.Sprintf("%s/api/folo/admin/%s/record", indyURL, foloId)
+	fmt.Printf("Start to seal folo tracking: %s", foloId)
+	_, result := postRequest(URL, nil)
+	if result {
+		fmt.Printf("Folo tracking sealing done: %s", foloId)
+	} else {
+		fmt.Printf("Folo tracking sealing failed: %s", foloId)
+		return false
+	}
+	return true
+}
+
+func getFolo(indyURL, foloId string) ([]string, bool) {
+	URL := fmt.Sprintf("%s/api/folo/admin/%s/record", indyURL, foloId)
+	fmt.Printf("Start to get folo tracking: %s", foloId)
+	data, result := getRequest(URL)
+	if !result {
+		fmt.Printf("Get folo tracking failed: %s", foloId)
+		return nil, false
+	}
+	trackingContent := &TrackingContent{}
+	err := json.Unmarshal([]byte(data), trackingContent)
+	if err != nil {
+		fmt.Printf("Get folo tracking failed: %s, Reason: %s ", foloId, err)
+		return nil, false
+	}
+	upds := trackingContent.Uploads
+	paths := make([]string, len(upds))
+	for _, upd := range trackingContent.Uploads {
+		paths = append(paths, upd.Path)
+	}
+	return paths, true
+}
+
+func promote(indyURL, source, target string, paths []string) {
 	promoteVars := template.IndyPromoteVars{
 		Source: source,
 		Target: target,
+		Paths:  paths,
 	}
 	promote := template.IndyPromoteJSONTemplate(&promoteVars)
 

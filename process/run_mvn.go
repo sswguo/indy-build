@@ -90,7 +90,8 @@ func prepareMvnSettings(IndyURL, localRepo, buildName string) string {
 
 	storeFile(settingsFile, settings)
 
-	fmt.Printf("settings generated: %s\n", settingsFile)
+	fmt.Printf("settings generated: %s\n\n", settingsFile)
+	fmt.Printf("settings content: %s\n\n", settings)
 
 	return settingsFile
 }
