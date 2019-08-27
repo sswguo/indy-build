@@ -8,12 +8,45 @@ import (
 	"gitlab.cee.redhat.com/gli/indy-build/template"
 )
 
-func prepareRepos(indyURL string, buildName string) {
-	prepareHosted(indyURL, buildName)
-	prepareGroup(indyURL, buildName)
+func prepareRepos(indyURL string, buildName string) bool {
+	if preapareTargetHosted(indyURL) {
+		if prepareHosted(indyURL, buildName) {
+			if prepareGroup(indyURL, buildName) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
-func prepareHosted(indyURL string, buildName string) {
+func preapareTargetHosted(indyURL string) bool {
+	target := "pnc-builds"
+
+	URL := fmt.Sprintf("%s/api/admin/stores/maven/hosted/%s", indyURL, target)
+	_, result := getRequest(URL)
+	if result {
+		fmt.Printf("Target hosted %s already exists, will bypass creation", target)
+		return result
+	}
+	fmt.Printf("Target hosted %s not exists, will create first", target)
+
+	hostedVars := template.IndyHostedVars{
+		Name: target,
+	}
+
+	hosted := template.IndyHostedTemplate(&hostedVars)
+	fmt.Printf("Start creating hosted repo %s\n", target)
+	result = putRequest(URL, strings.NewReader(hosted))
+	if result {
+		fmt.Printf("Hosted repo %s created successfully, check %s for details\n", target, URL)
+	} else {
+		fmt.Printf("Hosted repo %s created failed, no following operations\n", target)
+	}
+
+	return result
+}
+
+func prepareHosted(indyURL string, buildName string) bool {
 	hostedVars := template.IndyHostedVars{
 		Name: buildName,
 	}
@@ -25,10 +58,13 @@ func prepareHosted(indyURL string, buildName string) {
 	result := putRequest(URL, strings.NewReader(hosted))
 	if result {
 		fmt.Printf("Hosted repo %s created successfully, check %s for details\n", buildName, URL)
+	} else {
+		fmt.Printf("Hosted repo %s creation fail, no following operations\n", buildName)
 	}
+	return result
 }
 
-func prepareGroup(indyURL string, buildName string) {
+func prepareGroup(indyURL string, buildName string) bool {
 	groupVars := template.IndyGroupVars{
 		Name:         buildName,
 		Constituents: []string{fmt.Sprintf("maven:hosted:%s", buildName), "maven:hosted:pnc-builds", "maven:remote:central"},
@@ -41,7 +77,10 @@ func prepareGroup(indyURL string, buildName string) {
 	result := putRequest(URL, strings.NewReader(group))
 	if result {
 		fmt.Printf("Group repo %s created successfully, check %s for details\n", buildName, URL)
+	} else {
+		fmt.Printf("Group repo %s created failed, no following operations\n", buildName)
 	}
+	return result
 }
 
 func destroyRepos(indyURL string, buildName string) {
@@ -116,8 +155,8 @@ func promote(indyURL, source, target string, paths []string) {
 	respText, result := postRequest(URL, strings.NewReader(promote))
 
 	if result {
-		fmt.Printf("Promote successfully. Result is:\n %s\n\n", respText)
+		fmt.Printf("Promote Done. Result is:\n %s\n\n", respText)
 	} else {
-		fmt.Printf("Promote failed. Result is:\n %s\n\n", respText)
+		fmt.Printf("Promote Error. Result is:\n %s\n\n", respText)
 	}
 }
