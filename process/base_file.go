@@ -1,6 +1,17 @@
 package process
 
-import "os"
+import (
+	"os"
+	"strings"
+)
+
+func getTempDir() string {
+	temp := os.Getenv("TMPDIR")
+	if strings.TrimSpace(temp) == "" {
+		temp = "/tmp"
+	}
+	return temp
+}
 
 func storeFile(fileName string, content string) {
 	exists := fileExists(fileName)

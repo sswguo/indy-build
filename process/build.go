@@ -1,8 +1,13 @@
 package process
 
-import "fmt"
+import (
+	"fmt"
+	"path"
+)
 
-func RunBuild(indyURL, prjPom, prjTag, buildName string) {
+func RunBuild(indyURL, gitURL, checkoutType, checkout, buildName string) {
+	dir := GetSrc(gitURL, checkout, checkoutType)
+	prjPom := path.Join(dir, "pom.xml")
 	if prepareRepos(indyURL, buildName) {
 		runMvnBuild(indyURL, prjPom, buildName)
 		sealed := sealFolo(indyURL, buildName)
@@ -15,4 +20,6 @@ func RunBuild(indyURL, prjPom, prjTag, buildName string) {
 
 		destroyRepos(indyURL, buildName)
 	}
+
+	rmRepo(dir)
 }
