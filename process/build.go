@@ -2,8 +2,22 @@ package process
 
 import (
 	"fmt"
+	"os/exec"
 	"path"
 )
+
+func checkCmd(cmd string) bool {
+	_, err := exec.LookPath(cmd)
+	if err != nil {
+		fmt.Printf("Error: Can not find build command \"%s\", it is needed to run this build\n", cmd)
+		return false
+	}
+	return true
+}
+
+func CheckPrerequisites(cmd string) bool {
+	return checkCmd(cmd)
+}
 
 func RunBuild(indyURL, gitURL, checkoutType, checkout, buildName string) {
 	dir := GetSrc(gitURL, checkout, checkoutType)

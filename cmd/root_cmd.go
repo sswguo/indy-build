@@ -19,7 +19,8 @@ var rootCmd = &cobra.Command{
 		readyToRun := true
 		checkout, checkoutType, validC := getCheckout()
 		validV := validateArgs()
-		readyToRun = validC && validV
+		validPrepare := process.CheckPrerequisites("mvn")
+		readyToRun = validC && validV && validPrepare
 		if readyToRun {
 			process.RunBuild(indyURL, gitURL, checkoutType, checkout, buildName)
 		}
@@ -67,4 +68,8 @@ func init() {
 	rootCmd.Flags().StringVarP(&tag, "tag", "t", "", "project git tag to build")
 	rootCmd.Flags().StringVarP(&branch, "branch", "b", "", "project git branch to build.")
 	rootCmd.Flags().StringVarP(&buildName, "buildName", "n", "", "build name.")
+
+	rootCmd.MarkFlagRequired("indy_url")
+	rootCmd.MarkFlagRequired("buildName")
+	rootCmd.MarkFlagRequired("gitURL")
 }
