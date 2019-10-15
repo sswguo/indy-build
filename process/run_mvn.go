@@ -1,9 +1,7 @@
 package process
 
 import (
-	"bufio"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"strings"
@@ -35,33 +33,8 @@ func runMvn(goals []string, pomfile string, settingsFile string) {
 		args = append(args, "-s")
 		args = append(args, settingsFile)
 	}
-	fmt.Printf("Start executing: %s\n\n", getWholeCmd(args))
+	fmt.Printf("Start executing: %s\n\n", getWholeCmd("mvn", args))
 	printRealCmdOutput(exec.Command("mvn", args...))
-}
-
-func getWholeCmd(args []string) string {
-	result := "mvn"
-	for _, arg := range args {
-		result = result + " " + arg
-	}
-	return result
-}
-
-func printRealCmdOutput(cmd *exec.Cmd) {
-	stdout, _ := cmd.StdoutPipe()
-	cmd.Start()
-	for {
-		r := bufio.NewReader(stdout)
-		line, _, err := r.ReadLine()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			fmt.Printf(err.Error())
-			break
-		}
-		fmt.Println(string(line))
-	}
 }
 
 func prepareMvnSettings(IndyURL, localRepo, buildName string) string {
@@ -99,9 +72,4 @@ func prepareMvnSettings(IndyURL, localRepo, buildName string) string {
 func destroyMvnSettings(settingsFile string) {
 	os.Remove(settingsFile)
 	fmt.Printf("settings removed: %s\n", settingsFile)
-}
-
-func destroyRepo(repoLocation string) {
-	os.RemoveAll(repoLocation)
-	fmt.Printf("Repo removed: %s\n", repoLocation)
 }
