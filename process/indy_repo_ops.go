@@ -111,12 +111,12 @@ func destroyIndyGroup(indyURL, buildType, buildName string) {
 
 func sealIndyFolo(indyURL, foloId string) bool {
 	URL := fmt.Sprintf("%s/api/folo/admin/%s/record", indyURL, foloId)
-	fmt.Printf("Start to seal folo tracking: %s", foloId)
+	fmt.Printf("Start to seal folo tracking: %s\n", foloId)
 	_, result := postRequest(URL, nil)
 	if result {
-		fmt.Printf("Folo tracking sealing done: %s", foloId)
+		fmt.Printf("Folo tracking sealing done: %s\n", foloId)
 	} else {
-		fmt.Printf("Folo tracking sealing failed: %s", foloId)
+		fmt.Printf("Folo tracking sealing failed: %s\n", foloId)
 		return false
 	}
 	return true
@@ -124,16 +124,16 @@ func sealIndyFolo(indyURL, foloId string) bool {
 
 func getIndyFolo(indyURL, foloId string) ([]string, bool) {
 	URL := fmt.Sprintf("%s/api/folo/admin/%s/record", indyURL, foloId)
-	fmt.Printf("Start to get folo tracking: %s", foloId)
+	fmt.Printf("Start to get folo tracking: %s\n", foloId)
 	data, result := getRequest(URL)
 	if !result {
-		fmt.Printf("Get folo tracking failed: %s", foloId)
+		fmt.Printf("Get folo tracking failed: %s\n", foloId)
 		return nil, false
 	}
 	trackingContent := &TrackingContent{}
 	err := json.Unmarshal([]byte(data), trackingContent)
 	if err != nil {
-		fmt.Printf("Get folo tracking failed: %s, Reason: %s ", foloId, err)
+		fmt.Printf("Get folo tracking failed: %s, Reason: %s \n", foloId, err)
 		return nil, false
 	}
 	upds := trackingContent.Uploads
