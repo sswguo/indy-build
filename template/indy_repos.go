@@ -10,6 +10,7 @@ import (
 // IndyGroupVars ...
 type IndyGroupVars struct {
 	Name         string
+	Type         string
 	Constituents []string
 }
 
@@ -17,13 +18,13 @@ type IndyGroupVars struct {
 func IndyGroupTemplate(indyGroupVars *IndyGroupVars) string {
 	groupTemplate := `{
   "type" : "group",
-  "key" : "maven:group:{{.Name}}",
+  "key" : "{{.Type}}:group:{{.Name}}",
   "metadata" : {
     "changelog" : "init group {{.Name}}"
   },
   "disabled" : false,
   "constituents" : [{{range $index,$con := .Constituents}}"{{$con}}"{{if isNotLast $index $.Constituents}},{{end}}{{end}}],
-  "packageType" : "maven",
+  "packageType" : "{{.Type}}",
   "name" : "{{.Name}}",
   "type" : "group",
   "disable_timeout" : 0,
