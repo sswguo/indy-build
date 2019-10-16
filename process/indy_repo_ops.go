@@ -139,7 +139,9 @@ func getIndyFolo(indyURL, foloId string) ([]string, bool) {
 	upds := trackingContent.Uploads
 	paths := make([]string, len(upds))
 	for _, upd := range trackingContent.Uploads {
-		paths = append(paths, upd.Path)
+		if strings.TrimSpace(upd.Path) != "" {
+			paths = append(paths, upd.Path)
+		}
 	}
 	return paths, true
 }
