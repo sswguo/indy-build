@@ -46,12 +46,13 @@ func IndyGroupTemplate(indyGroupVars *IndyGroupVars) string {
 // IndyHostedVars ...
 type IndyHostedVars struct {
 	Name string
+	Type string
 }
 
 // IndyHostedTemplate ...
 func IndyHostedTemplate(indyHostedVars *IndyHostedVars) string {
 	hostedTemplate := `{
-  "key" : "maven:hosted:{{.Name}}",
+  "key" : "{{.Type}}:hosted:{{.Name}}",
   "description" : "{{.Name}}",
   "metadata" : {
     "changelog" : "init hosted {{.Name}}"
@@ -59,7 +60,7 @@ func IndyHostedTemplate(indyHostedVars *IndyHostedVars) string {
   "disabled" : false,
   "snapshotTimeoutSeconds" : 0,
   "readonly" : false,
-  "packageType" : "maven",
+  "packageType" : "{{.Type}}",
   "name" : "{{.Name}}",
   "type" : "hosted",
   "disable_timeout" : 0,

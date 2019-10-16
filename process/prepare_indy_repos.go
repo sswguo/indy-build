@@ -49,6 +49,7 @@ func preapareIndyTargetHosted(indyURL string, buildMeta BuildMetadata) bool {
 func prepareIndyHosted(indyURL, buildType, buildName string) bool {
 	hostedVars := template.IndyHostedVars{
 		Name: buildName,
+		Type: buildType,
 	}
 
 	URL := fmt.Sprintf("%s/api/admin/stores/%s/hosted/%s", indyURL, buildType, buildName)
