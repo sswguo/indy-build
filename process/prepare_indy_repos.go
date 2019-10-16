@@ -69,6 +69,7 @@ func prepareIndyGroup(indyURL, buildName string, buildMeta BuildMetadata) bool {
 	buildType, target, central := buildMeta.buildType, buildMeta.promoteTarget, buildMeta.centralName
 	groupVars := template.IndyGroupVars{
 		Name:         buildName,
+		Type:         buildMeta.buildType,
 		Constituents: []string{fmt.Sprintf("%s:hosted:%s", buildType, buildName), fmt.Sprintf("%s:hosted:%s", buildType, target), fmt.Sprintf("%s:remote:%s", buildType, central)},
 	}
 	group := template.IndyGroupTemplate(&groupVars)
