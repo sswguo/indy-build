@@ -22,7 +22,6 @@ func runNpmPublish(indyURL, prjLoc, buildName string) {
 func runNpmCmd(cmd, indyURL, prjLoc, buildName string) {
 	args := make([]string, 0)
 	args = append(args, cmd)
-	args = append(args, prjLoc)
 	args = append(args, "--registry")
 	registry := fmt.Sprintf("%s/api/folo/track/%s/npm/group/%s", indyURL, buildName, buildName)
 	args = append(args, registry)

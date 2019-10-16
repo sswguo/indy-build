@@ -1,28 +1,29 @@
 package process
 
 import (
-	"bufio"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 )
 
 func printRealCmdOutput(cmd *exec.Cmd) {
-	stdout, _ := cmd.StdoutPipe()
-	cmd.Start()
-	for {
-		r := bufio.NewReader(stdout)
-		line, _, err := r.ReadLine()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			fmt.Printf(err.Error())
-			break
-		}
-		fmt.Println(string(line))
-	}
+	// stdout, _ := cmd.StdoutPipe()
+	fmt.Printf("Running cmd: %v in %v\n", cmd, cmd.Dir)
+	cmd.Stderr = os.Stderr
+	cmd.Stdout = os.Stdout
+	cmd.Run()
+	// for {
+	// 	r := bufio.NewReader(stdout)
+	// 	line, _, err := r.ReadLine()
+	// 	if err == io.EOF {
+	// 		break
+	// 	}
+	// 	if err != nil {
+	// 		fmt.Printf(err.Error())
+	// 		break
+	// 	}
+	// 	fmt.Println(string(line))
+	// }
 }
 
 func destroyRepo(repoLocation string) {

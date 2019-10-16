@@ -8,10 +8,10 @@ import (
 	"gitlab.cee.redhat.com/gli/indy-build/template"
 )
 
-func prepareRepos(indyURL string, buildName string) bool {
-	if preapareTargetHosted(indyURL) {
-		if prepareHosted(indyURL, buildName) {
-			if prepareGroup(indyURL, buildName) {
+func prepareIndyRepos(indyURL, buildName string, buildMeta BuildMetadata) bool {
+	if preapareIndyTargetHosted(indyURL, buildMeta) {
+		if prepareIndyHosted(indyURL, buildMeta.buildType, buildName) {
+			if prepareIndyGroup(indyURL, buildName, buildMeta) {
 				return true
 			}
 		}
@@ -19,10 +19,10 @@ func prepareRepos(indyURL string, buildName string) bool {
 	return false
 }
 
-func preapareTargetHosted(indyURL string) bool {
-	target := "pnc-builds"
+func preapareIndyTargetHosted(indyURL string, buildMeta BuildMetadata) bool {
+	buildType, target := buildMeta.buildType, buildMeta.promoteTarget
 
-	URL := fmt.Sprintf("%s/api/admin/stores/maven/hosted/%s", indyURL, target)
+	URL := fmt.Sprintf("%s/api/admin/stores/%s/hosted/%s", indyURL, buildType, target)
 	_, result := getRequest(URL)
 	if result {
 		fmt.Printf("Target hosted %s already exists, will bypass creation\n\n", target)
@@ -46,12 +46,12 @@ func preapareTargetHosted(indyURL string) bool {
 	return result
 }
 
-func prepareHosted(indyURL string, buildName string) bool {
+func prepareIndyHosted(indyURL, buildType, buildName string) bool {
 	hostedVars := template.IndyHostedVars{
 		Name: buildName,
 	}
 
-	URL := fmt.Sprintf("%s/api/admin/stores/maven/hosted/%s", indyURL, buildName)
+	URL := fmt.Sprintf("%s/api/admin/stores/%s/hosted/%s", indyURL, buildType, buildName)
 
 	hosted := template.IndyHostedTemplate(&hostedVars)
 	fmt.Printf("Start creating hosted repo %s\n", buildName)
@@ -64,14 +64,15 @@ func prepareHosted(indyURL string, buildName string) bool {
 	return result
 }
 
-func prepareGroup(indyURL string, buildName string) bool {
+func prepareIndyGroup(indyURL, buildName string, buildMeta BuildMetadata) bool {
+	buildType, target, central := buildMeta.buildType, buildMeta.promoteTarget, buildMeta.centralName
 	groupVars := template.IndyGroupVars{
 		Name:         buildName,
-		Constituents: []string{fmt.Sprintf("maven:hosted:%s", buildName), "maven:hosted:pnc-builds", "maven:remote:central"},
+		Constituents: []string{fmt.Sprintf("%s:hosted:%s", buildType, buildName), fmt.Sprintf("%s:hosted:%s", buildType, target), fmt.Sprintf("%s:remote:%s", buildType, central)},
 	}
 	group := template.IndyGroupTemplate(&groupVars)
 
-	URL := fmt.Sprintf("%s/api/admin/stores/maven/group/%s", indyURL, buildName)
+	URL := fmt.Sprintf("%s/api/admin/stores/%s/group/%s", indyURL, buildType, buildName)
 
 	fmt.Printf("Start creating group repo %s\n", buildName)
 	result := putRequest(URL, strings.NewReader(group))
@@ -83,13 +84,13 @@ func prepareGroup(indyURL string, buildName string) bool {
 	return result
 }
 
-func destroyRepos(indyURL string, buildName string) {
-	destroyGroup(indyURL, buildName)
+func destroyIndyRepos(indyURL, buildType, buildName string) {
+	destroyIndyGroup(indyURL, buildType, buildName)
 	// destroyHosted(indyURL, buildName)
 }
 
-func destroyHosted(indyURL string, buildName string) {
-	URL := fmt.Sprintf("%s/api/admin/stores/maven/hosted/%s", indyURL, buildName)
+func destroyIndyHosted(indyURL, buildType, buildName string) {
+	URL := fmt.Sprintf("%s/api/admin/stores/%s/hosted/%s", indyURL, buildType, buildName)
 	fmt.Printf("Start deleting hosted repo %s\n", buildName)
 	result := delRequest(URL)
 	if result {
@@ -97,8 +98,8 @@ func destroyHosted(indyURL string, buildName string) {
 	}
 }
 
-func destroyGroup(indyURL string, buildName string) {
-	URL := fmt.Sprintf("%s/api/admin/stores/maven/group/%s", indyURL, buildName)
+func destroyIndyGroup(indyURL, buildType, buildName string) {
+	URL := fmt.Sprintf("%s/api/admin/stores/%s/group/%s", indyURL, buildType, buildName)
 	fmt.Printf("Start deleting group repo %s\n", buildName)
 	result := delRequest(URL)
 	if result {
@@ -106,7 +107,7 @@ func destroyGroup(indyURL string, buildName string) {
 	}
 }
 
-func sealFolo(indyURL, foloId string) bool {
+func sealIndyFolo(indyURL, foloId string) bool {
 	URL := fmt.Sprintf("%s/api/folo/admin/%s/record", indyURL, foloId)
 	fmt.Printf("Start to seal folo tracking: %s", foloId)
 	_, result := postRequest(URL, nil)
@@ -119,7 +120,7 @@ func sealFolo(indyURL, foloId string) bool {
 	return true
 }
 
-func getFolo(indyURL, foloId string) ([]string, bool) {
+func getIndyFolo(indyURL, foloId string) ([]string, bool) {
 	URL := fmt.Sprintf("%s/api/folo/admin/%s/record", indyURL, foloId)
 	fmt.Printf("Start to get folo tracking: %s", foloId)
 	data, result := getRequest(URL)

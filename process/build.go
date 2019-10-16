@@ -19,20 +19,27 @@ func CheckPrerequisites(cmd string) bool {
 	return checkCmd(cmd)
 }
 
-func RunBuild(indyURL, gitURL, checkoutType, checkout, buildName string) {
+func RunBuild(indyURL, gitURL, checkoutType, checkout, buildType, buildName string) {
 	dir := GetSrc(gitURL, checkout, checkoutType)
 	prjPom := path.Join(dir, "pom.xml")
-	if prepareRepos(indyURL, buildName) {
-		runMvnBuild(indyURL, prjPom, buildName)
-		sealed := sealFolo(indyURL, buildName)
-		if sealed {
-			paths, done := getFolo(indyURL, buildName)
-			if done {
-				promote(indyURL, fmt.Sprintf("maven:hosted:%s", buildName), "maven:hosted:pnc-builds", paths)
+	buildMeta := decideMeta(buildType)
+	if buildMeta != nil {
+		if prepareIndyRepos(indyURL, buildName, *buildMeta) {
+			if buildType == TYPE_MVN {
+				runMvnBuild(indyURL, prjPom, buildName)
+			} else if buildType == TYPE_NPM {
+				runNpmBuild(indyURL, buildName)
 			}
+			sealed := sealIndyFolo(indyURL, buildName)
+			if sealed {
+				paths, done := getIndyFolo(indyURL, buildName)
+				if done {
+					promote(indyURL, fmt.Sprintf("%s:hosted:%s", buildType, buildName), fmt.Sprintf("%s:hosted:%s", buildType, buildMeta.promoteTarget), paths)
+				}
+			}
+			destroyIndyRepos(indyURL, buildType, buildName)
 		}
 
-		destroyRepos(indyURL, buildName)
 	}
 
 	rmRepo(dir)
