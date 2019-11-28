@@ -32,6 +32,7 @@ func preapareIndyTargetHosted(indyURL string, buildMeta BuildMetadata) bool {
 
 	hostedVars := template.IndyHostedVars{
 		Name: target,
+		Type: buildType,
 	}
 
 	hosted := template.IndyHostedTemplate(&hostedVars)
