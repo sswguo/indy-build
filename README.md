@@ -23,11 +23,17 @@ Prerequisites to compile
 
 * golang (v1.11+)  
 * go modules enabled(See [this](https://github.com/golang/go/wiki/Modules) for how to enable, and is enabled by default with golang v1.13+)
+* Set up $GOPATH to a location
 
 Compile & make
 ---
 
-Run "make clean build". And after build, you can find the compiled binary in "build" folder.  
+* Run "make clean build". And after build, you can find the compiled binary in "build" folder.  
+
+Not to compile?
+---
+
+* You can directly download the binary [here](https://github.com/ligangty/indy-build/releases/download/indy-build-0.1/indy-build-0.1_linux_x86_64.tar.gz) for linux_x86 env  
 
 Usage
 ---
